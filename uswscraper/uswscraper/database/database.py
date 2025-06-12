@@ -1,8 +1,9 @@
 """
 SQLAlchemy database utilities for the USW scraper
 """
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean
-from sqlalchemy.dialects.sqlite import JSON
+import time
+from sqlalchemy import Table, create_engine, Column, Integer, String, Float, Boolean
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 import logging
@@ -16,6 +17,10 @@ logger = logging.getLogger(__name__)
 # Define base class for SQLAlchemy models
 Base = declarative_base()
 
+def get_base():
+    """Get the base class for SQLAlchemy models"""
+    return Base
+
 # Define example model - you can expand this with your actual models
 class ScrapedItem(Base):
     __tablename__ = 'scraped_items'
@@ -24,11 +29,10 @@ class ScrapedItem(Base):
     url = Column(String, nullable=False)
     ip = Column(String)
     proxy = Column(String)
-    data = Column(JSON)  # Store any additional data as JSON
+    data = Column(JSONB)  # Store any additional data as JSON
     
     def __repr__(self):
         return f"<ScrapedItem(id={self.id}, url='{self.url}', ip='{self.ip}')>"
-
 
 class DatabaseManager:
     """SQLAlchemy database manager for USW scrapers"""
@@ -52,12 +56,13 @@ class DatabaseManager:
         try:
             # Create engine with connection pool
             print(self.db_url)
-            self.engine = create_engine(
-                self.db_url,
-                echo=False,  # Set to True to see SQL queries
-                pool_pre_ping=True,  # Verify connections before use
-                pool_recycle=3600    # Recycle connections after 1 hour
-            )
+            # self.engine = create_engine(
+            #     self.db_url,
+            #     # echo=False,  # Set to True to see SQL queries
+            #     # pool_pre_ping=True,  # Verify connections before use
+            #     # pool_recycle=3600    # Recycle connections after 1 hour
+            # )
+            self.engine = create_engine("postgresql+psycopg2://citizix_user:S3cret@localhost:5433/citizix_db")
             
             # Create session factory
             self.session_factory = sessionmaker(bind=self.engine)
@@ -77,6 +82,7 @@ class DatabaseManager:
                 self.connect()
                 
             Base.metadata.create_all(self.engine)
+
             logger.info("Database schema created")
             return True
             

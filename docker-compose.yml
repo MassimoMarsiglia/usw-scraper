@@ -1,18 +1,13 @@
-services:
-  DB:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: scott
-      POSTGRES_PASSWORD: tiger
-      POSTGRES_DB: test
-      # Make PostgreSQL accept all connections
-      POSTGRES_HOST_AUTH_METHOD: md5
-    ports:
-      - "5432:5432"
-    volumes:
-      - db:/var/lib/postgresql/data
-    # Add custom command to allow connections from all IPs
-    command: postgres -c listen_addresses='*' -c password_encryption=md5
+version: '3.9'
 
-volumes:
-  db:
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5433:5432
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=S3cret
+      - POSTGRES_USER=citizix_user
+      - POSTGRES_DB=citizix_db

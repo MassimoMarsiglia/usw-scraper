@@ -474,7 +474,8 @@ load_dotenv()
 if __name__ == "__main__":
     # url = os.getenv("DATABASE_URL", f"sqlite://../../{DB_FILE}")
     DB_NAME = os.getenv("DB_NAME", "cs2_items.db")
-    DB_PATH = f"sqlite:///../../{DB_NAME}"
+    # DB_PATH = f"sqlite:///../../{DB_NAME}"
+    DB_PATH = "postgresql+psycopg2://scott:tiger@localhost/test"
     print(f"Using database path: {DB_PATH}")
     engine = create_engine(url=DB_PATH)
     
