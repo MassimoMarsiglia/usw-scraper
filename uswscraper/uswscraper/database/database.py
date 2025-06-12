@@ -17,10 +17,6 @@ logger = logging.getLogger(__name__)
 # Define base class for SQLAlchemy models
 Base = declarative_base()
 
-def get_base():
-    """Get the base class for SQLAlchemy models"""
-    return Base
-
 # Define example model - you can expand this with your actual models
 class ScrapedItem(Base):
     __tablename__ = 'scraped_items'
@@ -80,7 +76,7 @@ class DatabaseManager:
         try:
             if not self.engine:
                 self.connect()
-                
+
             Base.metadata.create_all(self.engine)
 
             logger.info("Database schema created")

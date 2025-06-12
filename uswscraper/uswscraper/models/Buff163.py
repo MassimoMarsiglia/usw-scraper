@@ -5,9 +5,8 @@ from sqlalchemy import (
     Integer,
     String,
 )
-from ..database.database import get_base
+from ..database.database import Base
 
-Base = get_base()
 class Buff163_Listing(Base):
     __tablename__ = 'buff163_listings'
     
@@ -17,7 +16,7 @@ class Buff163_Listing(Base):
     request_data = Column(JSON, nullable=False)
     
     def __repr__(self):
-        return f"<Buff163_Listing(id={self.id}, item_name='{self.item_name}', item_price={self.item_price})>"
+        return f"<Buff163_Listing(id={self.id}, item_name='{self.item_name}')>"
     
 class Buff163_BuyOrder(Base):
     __tablename__ = 'buff163_buy_orders'
