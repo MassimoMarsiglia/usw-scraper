@@ -194,3 +194,5 @@ cython_debug/
 .cursorindexingignore
 
 *proxies.txt
+
+cs2_items.db
