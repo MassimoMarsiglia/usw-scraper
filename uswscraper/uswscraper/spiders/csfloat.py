@@ -1,3 +1,4 @@
+import time
 from typing import List
 import scrapy
 
@@ -30,22 +31,21 @@ class CSFloatSpider(scrapy.Spider):
                 yield scrapy.Request(
                     url=url,
                     callback=self.parse,
-                    meta={"skin_variant_id": getattr(skin_variant, "id", "unknown")},
+                    meta={"skin_variant_id": getattr(skin_variant, "id", "unknown"), "item_name": market_hash_name},
                 )
 
     def parse(self, response):
         skin_variant_id = response.meta.get("skin_variant_id")
-        data = response.json()
+        item_name = response.meta.get("item_name", "Unknown Item")
+        data: List = response.json()
 
-        if not data or "sales" not in data:
+        if not data:
             self.logger.warning(f"No sales data found for skin variant {skin_variant_id}")
             return
 
-        for sale in data["sales"]:
+        for sale in data:
             yield {
                 "skin_variant_id": skin_variant_id,
-                "sale_price": sale.get("price"),
-                "sale_time": sale.get("time"),
-                "buyer": sale.get("buyer"),
-                "seller": sale.get("seller"),
+                "item_name": item_name,
+                "request_data": sale,
             }

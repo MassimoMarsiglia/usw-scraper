@@ -2,6 +2,7 @@ from sqlalchemy import (
     JSON,
     Column,
     Date,
+    ForeignKey,
     Integer,
     String,
 )
@@ -13,9 +14,10 @@ class CSFloat_Sale(Base):
     __tablename__ = 'csfloat_sales'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    skin_variant_id = Column(String, nullable=False)
+    skin_variant_id = Column(String, ForeignKey('skin_variants.id'), nullable=False)
     item_name = Column(String, nullable=False)
     request_data = Column(JSONB, nullable=False)
+    date = Column(Date, nullable=False)
 
     relationship(
         "SkinVariant",
