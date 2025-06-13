@@ -50,8 +50,6 @@ class DatabaseManager:
     def connect(self):
         """Connect to database and create session factory"""
         try:
-            # Create engine with connection pool
-            print(self.db_url)
             # self.engine = create_engine(
             #     self.db_url,
             #     # echo=False,  # Set to True to see SQL queries
