@@ -5,6 +5,8 @@
 
 
 # useful for handling different item types with a single interface
+from datetime import date
+import json
 from itemadapter import ItemAdapter
 
 from .database.database import DatabaseManager
@@ -26,10 +28,14 @@ class CSFloatPipeline:
     def process_item(self, item, spider):
         if spider.name == "csfloat":
             # Create a new CSFloat_Sale object
+            request_data = item["request_data"]
+            if isinstance(request_data, str):
+                request_data = json.loads(request_data)
+
             sale = CSFloat_Sale(
                 skin_variant_id=item["skin_variant_id"],
                 item_name=item["item_name"],
-                request_data=item["request_data"]
+                request_data=item["request_data"],
             )
             
             # Add to session and commit

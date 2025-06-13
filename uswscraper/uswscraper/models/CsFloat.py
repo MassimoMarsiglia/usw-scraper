@@ -1,7 +1,7 @@
 from sqlalchemy import (
     JSON,
     Column,
-    Date,
+    DateTime,
     ForeignKey,
     Integer,
     String,
@@ -17,7 +17,7 @@ class CSFloat_Sale(Base):
     skin_variant_id = Column(String, ForeignKey('skin_variants.id'), nullable=False)
     item_name = Column(String, nullable=False)
     request_data = Column(JSONB, nullable=False)
-    date = Column(Date, nullable=False)
+    date = Column(Integer)
 
     relationship(
         "SkinVariant",
