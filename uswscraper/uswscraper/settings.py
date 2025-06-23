@@ -22,17 +22,17 @@ ADDONS = {}
 ROBOTSTXT_OBEY = False
 
 # Good settings for API scraping
-DOWNLOAD_DELAY = 1.5
-CONCURRENT_REQUESTS = 4
-CONCURRENT_REQUESTS_PER_DOMAIN = 4
+DOWNLOAD_DELAY = 0.25
+CONCURRENT_REQUESTS = 20
+CONCURRENT_REQUESTS_PER_DOMAIN = 20
 RETRY_TIMES = 5
 RETRY_HTTP_CODES = [500, 502, 503, 504, 429]
 
 # Enable the AutoThrottle extension
 AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_START_DELAY = 5.0  # Initial delay in seconds
-AUTOTHROTTLE_MAX_DELAY = 60.0   # Maximum delay when servers are slow
-AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0  # Target requests per second
+AUTOTHROTTLE_START_DELAY = 0.5  # Initial delay in seconds
+AUTOTHROTTLE_MAX_DELAY = 10.0   # Maximum delay when servers are slow
+AUTOTHROTTLE_TARGET_CONCURRENCY = 4.0  # Target requests per second
 AUTOTHROTTLE_DEBUG = False  # To see what's happening
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)

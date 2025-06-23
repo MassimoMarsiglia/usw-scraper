@@ -34,7 +34,7 @@ class GamerPaySpider(scrapy.Spider):
             "item_name": skin.name,
             "cleaned_name": self.clean_item_name(skin.name),
             "wear": skin.wear.name if skin.wear else None,
-            "stattrak": skin.stattrak,
+            "statTrak": skin.stattrak,
             "souvenir": skin.souvenir,
             "page": page,
             "has_fetched_sales": False,
@@ -46,7 +46,7 @@ class GamerPaySpider(scrapy.Spider):
             f"{self.base_url}/feed?"
             f"query={meta['cleaned_name']}&"
             f"wear={meta['wear']}&"
-            f"stattrak={meta['stattrak']}&"
+            f"statTrak={meta['statTrak']}&"
             f"souvenir={meta['souvenir']}&"
             f"page={meta['page']}"
         )
