@@ -1,4 +1,4 @@
-# Scrapy settings for uswscraper project
+# Scrapy settings for csgo_skin project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,16 +7,16 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "uswscraper"
+BOT_NAME = "csgo_skin"
 
-SPIDER_MODULES = ["uswscraper.spiders"]
-NEWSPIDER_MODULE = "uswscraper.spiders"
+SPIDER_MODULES = ["csgo_skin.spiders"]
+NEWSPIDER_MODULE = "csgo_skin.spiders"
 
 ADDONS = {}
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "uswscraper (+http://www.yourdomain.com)"
+#USER_AGENT = "csgo_skin (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -47,18 +47,14 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "uswscraper.middlewares.UswscraperSpiderMiddleware": 543,
+#    "csgo_skin.middlewares.CsgoSkinSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-    'scrapy_proxies.RandomProxy': 100,
-    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
-}
-
-PROXY_LIST = "./proxies.txt"
-PROXY_MODE = 0
+#DOWNLOADER_MIDDLEWARES = {
+#    "csgo_skin.middlewares.CsgoSkinDownloaderMiddleware": 543,
+#}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -69,7 +65,7 @@ PROXY_MODE = 0
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    "uswscraper.pipelines.UswscraperPipeline": 300,
+#    "csgo_skin.pipelines.CsgoSkinPipeline": 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -96,15 +92,12 @@ PROXY_MODE = 0
 # Set settings whose default value is deprecated to a future-proof value
 FEED_EXPORT_ENCODING = "utf-8"
 
-DOWNLOADER_MIDDLEWARES = {
-    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+# scrapy-playwright
+DOWNLOAD_HANDLERS = {
+    "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+    "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
 }
 
-ROTATING_PROXY_LIST_PATH = 'proxies2.txt'  # path to your file
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
-# Optional settings to avoid bans
-DOWNLOAD_DELAY = 1  # Wait 1 second between requests
-RETRY_ENABLED = True
-RETRY_TIMES = 10
-ROBOTSTXT_OBEY = False
+PLAYWRIGHT_BROWSER_TYPE = "chromium"
