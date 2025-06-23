@@ -9,6 +9,8 @@ from datetime import date
 import json
 from itemadapter import ItemAdapter
 
+from .models.Gamerpay import GamerPay_Listing, GamerPay_Sale
+
 from .database.database import DatabaseManager
 from .models.CsFloat import CSFloat_Sale
 
@@ -47,4 +49,48 @@ class CSFloatPipeline:
                 self.session.rollback()
                 spider.logger.error(f"Error saving sale: {e}")
         
+        return item
+
+class GamerPayPipeline:
+    def __init__(self):
+        self.db = DatabaseManager()
+        self.session = None
+
+    def open_spider(self, spider):
+        self.session = self.db.get_session()
+
+    def close_spider(self, spider):
+        if self.session:
+            self.session.close()
+
+    def process_item(self, item, spider):
+        if spider.name == "gamerpay":
+            # Create a new GamerPay_Listing object
+            request_data = item["request_data"]
+            if isinstance(request_data, str):
+                request_data = json.loads(request_data)
+
+            data = None
+            if item["type"] == "list":
+                data = GamerPay_Listing(
+                    skin_variant_id=item["skin_variant_id"],
+                    item_name=item["item_name"],
+                    request_data=item["request_data"],
+                )
+            elif item["type"] == "sales":
+                data = GamerPay_Sale(
+                    skin_variant_id=item["skin_variant_id"],
+                    item_name=item["item_name"],
+                    request_data=item["request_data"],
+                )
+            
+            # Add to session and commit
+            try:
+                self.session.add(data)
+                self.session.commit()
+                spider.logger.info(f"Saved {item['type']} for {item['item_name']}")
+            except Exception as e:
+                self.session.rollback()
+                spider.logger.error(f"Error saving {item['type']}: {e}")
+
         return item

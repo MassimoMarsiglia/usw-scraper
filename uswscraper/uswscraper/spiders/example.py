@@ -4,7 +4,7 @@ import scrapy
 class ExampleSpider(scrapy.Spider):
     name = "example"
     allowed_domains = ["httpbin.org"]
-    start_urls = ["https://httpbin.org/ip"] * 100  # Simulating multiple requests
+    start_urls = ["https://httpbin.org/ip"] * 10  # Simulating multiple requests
     
 
     def parse(self, response):
