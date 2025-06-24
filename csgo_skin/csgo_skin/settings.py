@@ -1,4 +1,4 @@
-# Scrapy settings for uswscraper project
+# Scrapy settings for csgo_skin project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,44 +7,30 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "uswscraper"
+BOT_NAME = "csgo_skin"
 
-SPIDER_MODULES = ["uswscraper.spiders"]
-NEWSPIDER_MODULE = "uswscraper.spiders"
+SPIDER_MODULES = ["csgo_skin.spiders"]
+NEWSPIDER_MODULE = "csgo_skin.spiders"
 
 ADDONS = {}
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "uswscraper (+http://www.yourdomain.com)"
+#USER_AGENT = "csgo_skin (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = False
-
-# Good settings for API scraping
-DOWNLOAD_DELAY = 0.25
-CONCURRENT_REQUESTS = 20
-CONCURRENT_REQUESTS_PER_DOMAIN = 20
-RETRY_TIMES = 5
-RETRY_HTTP_CODES = [500, 502, 503, 504, 429]
-
-# Enable the AutoThrottle extension
-AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_START_DELAY = 0.5  # Initial delay in seconds
-AUTOTHROTTLE_MAX_DELAY = 10.0   # Maximum delay when servers are slow
-AUTOTHROTTLE_TARGET_CONCURRENCY = 4.0  # Target requests per second
-AUTOTHROTTLE_DEBUG = False  # To see what's happening
+ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-# CONCURRENT_REQUESTS = 16
+#CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-# DOWNLOAD_DELAY = 2
+#DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
-# CONCURRENT_REQUESTS_PER_IP = 1
+#CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
 #COOKIES_ENABLED = False
@@ -61,20 +47,14 @@ AUTOTHROTTLE_DEBUG = False  # To see what's happening
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "uswscraper.middlewares.UswscraperSpiderMiddleware": 543,
+#    "csgo_skin.middlewares.CsgoSkinSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-
-DOWNLOADER_MIDDLEWARES = {
-    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
-}
-
-ROTATING_PROXY_LIST_PATH = './proxies.txt'
-
-LOG_LEVEL = 'WARN'  # Set to 'DEBUG' for more detailed logs
+#DOWNLOADER_MIDDLEWARES = {
+#    "csgo_skin.middlewares.CsgoSkinDownloaderMiddleware": 543,
+#}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -84,11 +64,9 @@ LOG_LEVEL = 'WARN'  # Set to 'DEBUG' for more detailed logs
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    'uswscraper.pipelines.CSFloatPipeline': 300,
-    'uswscraper.pipelines.GamerPayPipeline': 400,
-    'uswscraper.pipelines.CSGOEmpirePipeline': 500,
-}
+#ITEM_PIPELINES = {
+#    "csgo_skin.pipelines.CsgoSkinPipeline": 300,
+#}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -114,15 +92,12 @@ ITEM_PIPELINES = {
 # Set settings whose default value is deprecated to a future-proof value
 FEED_EXPORT_ENCODING = "utf-8"
 
-DOWNLOADER_MIDDLEWARES = {
-    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+# scrapy-playwright
+DOWNLOAD_HANDLERS = {
+    "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+    "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
 }
 
-ROTATING_PROXY_LIST_PATH = 'proxies2.txt'  # path to your file
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
-# Optional settings to avoid bans
-DOWNLOAD_DELAY = 1  # Wait 1 second between requests
-RETRY_ENABLED = True
-RETRY_TIMES = 10
-ROBOTSTXT_OBEY = False
+PLAYWRIGHT_BROWSER_TYPE = "chromium"

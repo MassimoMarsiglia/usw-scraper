@@ -1,2 +1,7 @@
 scrapy
+scrapy_proxies
+psycopg2-binary
+pip install SQLAlchemy
+python-dotenv
+alembic
 scrapy-rotating-proxies
