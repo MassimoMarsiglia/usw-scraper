@@ -1,7 +1,5 @@
 from sqlalchemy import (
-    JSON,
     Column,
-    DateTime,
     ForeignKey,
     Integer,
     String,

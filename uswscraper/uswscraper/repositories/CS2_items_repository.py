@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from ..models.CS2_items import SkinVariant, Skin, Sticker, Agent, Crate, Keychain
 
 class CS2ItemsRepository:
@@ -15,6 +15,20 @@ class CS2ItemsRepository:
         """
         return self.db.query(SkinVariant).all()
     
+    def get_all_skin_variants_with_opts(self, wears: bool = True, skin: bool = True):
+        """
+        Get all skin variants with options for wears and skins.
+        """
+        query = self.db.query(SkinVariant)
+
+        if wears:
+            query = query.options(selectinload(SkinVariant.wear))
+
+        if skin:
+            query = query.options(selectinload(SkinVariant.skin))
+
+        return query.all()
+
     def get_all_skins(self):
         """
         Get all skins.
