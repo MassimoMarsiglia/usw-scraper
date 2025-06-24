@@ -87,6 +87,7 @@ LOG_LEVEL = 'WARN'  # Set to 'DEBUG' for more detailed logs
 ITEM_PIPELINES = {
     'uswscraper.pipelines.CSFloatPipeline': 300,
     'uswscraper.pipelines.GamerPayPipeline': 400,
+    'uswscraper.pipelines.CSGOEmpirePipeline': 500,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -1,5 +1,4 @@
 from sqlalchemy import (
-    JSON,
     Column,
     ForeignKey,
     Integer,
