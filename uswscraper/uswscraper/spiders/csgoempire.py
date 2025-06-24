@@ -20,7 +20,7 @@ class CSGOEmpireSpider(scrapy.Spider):
         'Authorization': '' # field is required to bypass geo-blocking, even if empty
     }
 
-    def build_meta(self, skin: SkinVariant, page: int = 1) -> dict:
+    def build_meta_list(self, skin: SkinVariant, page: int = 1) -> dict:
         if skin.souvenir:
             raise ValueError("CSGOEmpire does not support souvenir skins.")
         return {
@@ -29,6 +29,14 @@ class CSGOEmpireSpider(scrapy.Spider):
             "wear": skin.wear.name if skin.wear else None,
             "statTrak": skin.stattrak,
             "page": page,
+        }
+
+    def build_meta_sale(self, skin: SkinVariant) -> dict:
+        if skin.souvenir:
+            raise ValueError("CSGOEmpire does not support souvenir skins.")
+        return {
+            "skin_variant_id": skin.id,
+            "item_name": skin.name,
         }
     
     def build_listing_request_url(self, meta: dict) -> str:
@@ -45,13 +53,26 @@ class CSGOEmpireSpider(scrapy.Spider):
             f"order=market_value"
         )
         return url
+    
+    def build_sale_request_url(self, meta: dict) -> str:
+        """Build the URL for fetching sales based on the meta data."""
+        return f"{self.base_url}/trading/item/market/sales?name={meta['item_name']}"
 
     def get_listing_request(self, meta: dict):
         """Create a Scrapy request for fetching listings."""
         return scrapy.Request(
             url=self.build_listing_request_url(meta),
             headers=self.headers,
-            callback=self.parse,
+            callback=self.parse_list,
+            meta=meta
+        )
+    
+    def get_sale_request(self, meta: dict):
+        """Create a Scrapy request for fetching sales."""
+        return scrapy.Request(
+            url=self.build_sale_request_url(meta),
+            headers=self.headers,
+            callback=self.parse_sale,
             meta=meta
         )
 
@@ -66,15 +87,43 @@ class CSGOEmpireSpider(scrapy.Spider):
 
         for skin_variant in skin_variants:
             try:
-                meta = self.build_meta(skin_variant)
-                yield self.get_listing_request(meta)
+                meta_list = self.build_meta_list(skin_variant)
+                meta_sale = self.build_meta_sale(skin_variant)
+
+                yield self.get_listing_request(meta_list)
+                yield self.get_sale_request(meta_sale)
             except Exception as e:
                 if e is ValueError and str(e) == "CSGOEmpire does not support souvenir skins.":
                     self.logger.info(f"Skipping souvenir skin: {skin_variant.name}")
                     continue
                 self.logger.error(f"Error building request for {skin_variant.name}: {e}")
 
-    def parse(self, response):
+    def parse_sale(self, response):
+        """Parse the response for sales data."""
+        meta = response.meta
+        skin_variant_id = meta.get("skin_variant_id")
+        item_name = meta.get("item_name", "Unknown Item")
+
+        data = response.json()
+
+        if not data or not data.get('data'):
+            self.logger.warning(f"No sales found for skin variant {skin_variant_id}")
+            return
+
+        for item in data['data']:
+            price = item['total_value']
+            if price is None:
+                self.logger.warning(f"Missing price for item {item_name}")
+                continue
+            item['total_value'] = round(price / 1.628, 0)
+            yield {
+                "skin_variant_id": skin_variant_id,
+                "item_name": item_name,
+                "request_data": item,
+                "type": "sales",
+            }
+
+    def parse_list(self, response):
         # Implement the parsing logic here
         meta = response.meta
         skin_variant_id = meta.get("skin_variant_id")
@@ -105,11 +154,3 @@ class CSGOEmpireSpider(scrapy.Spider):
             next_page_meta = meta.copy()
             next_page_meta['page'] += 1
             yield self.get_listing_request(next_page_meta)
-    
-    def parse_item(self, item):
-        # Implement item parsing logic here
-        pass
-
-    def handle_error(self, failure):
-        # Handle errors during scraping
-        self.logger.error(f"Error occurred: {failure}")
